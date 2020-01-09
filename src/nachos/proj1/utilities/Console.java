@@ -9,15 +9,18 @@ public class Console
 	private static Console instance;
 	private Semaphore sem;
 	private SerialConsole console;
-	private String userInput;
+	private ConsoleReceiveInterruptHandler receiveInterruptHandler;
+	private ConsoleSendInterruptHandler sendInterruptHandler;
 
 	private Console()
 	{
 		sem = new Semaphore(0);
 		console = Machine.console();
-		console.setInterruptHandlers(
-				new ConsoleReceiveInterruptHandler(), 
-				new ConsoleSendInterruptHandler());
+		
+		receiveInterruptHandler = new ConsoleReceiveInterruptHandler();
+		sendInterruptHandler = new ConsoleSendInterruptHandler();
+		console.setInterruptHandlers(receiveInterruptHandler,
+				sendInterruptHandler);
 	}
 
 	public static Console getInstance()
@@ -31,7 +34,7 @@ public class Console
 	public String read()
 	{
 		sem.P();
-		return userInput;
+		return receiveInterruptHandler.getUserInput();
 	}
 
 	public int readInt()
@@ -74,12 +77,17 @@ public class Console
 	class ConsoleReceiveInterruptHandler implements Runnable
 	{
 		private String userInput;
+		
+		public ConsoleReceiveInterruptHandler()
+		{
+			this.userInput = "";
+		}
 
 		@Override
 		public void run()
 		{
 			char userInputChar = (char) console.readByte();
-
+			
 			if (userInputChar == '\n')
 				sem.V();
 			else
