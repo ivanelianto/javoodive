@@ -2,14 +2,14 @@
 
 package nachos.machine;
 
-import nachos.security.*;
-
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import nachos.security.Privilege;
 
 /**
  * A full-duplex network link. Provides ordered, unreliable delivery of
@@ -73,8 +73,6 @@ public class NetworkLink
 	 */
 	public NetworkLink(Privilege privilege)
 	{
-		System.out.print(" network");
-
 		this.privilege = privilege;
 
 		try
@@ -111,8 +109,6 @@ public class NetworkLink
 			System.out.println("Unable to acquire a link address!");
 			Lib.assertNotReached();
 		}
-
-		System.out.print("(" + linkAddress + ")");
 
 		receiveInterrupt = new Runnable()
 		{

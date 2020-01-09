@@ -2,10 +2,11 @@
 
 package nachos.machine;
 
-import nachos.security.*;
-import nachos.ag.*;
-
 import java.io.File;
+
+import nachos.ag.AutoGrader;
+import nachos.security.NachosSecurityManager;
+import nachos.security.Privilege;
 
 /**
  * The master class of the simulated machine. Processes command line arguments,
@@ -21,8 +22,6 @@ public final class Machine
 	 */
 	public static void main(final String[] args)
 	{
-		System.out.print("nachos 5.0j initializing...");
-
 		Lib.assertTrue(Machine.args == null);
 		Machine.args = args;
 
@@ -108,7 +107,6 @@ public final class Machine
 	 */
 	public static void halt()
 	{
-		System.out.print("Machine halting!\n\n");
 		stats.print();
 		terminate();
 	}
@@ -222,8 +220,6 @@ public final class Machine
 
 	private static void checkUserClasses()
 	{
-		System.out.print(" user-check");
-
 		Class aclsInt = (new int[0]).getClass();
 		Class clsObject = Lib.loadClass("java.lang.Object");
 		Class clsRunnable = Lib.loadClass("java.lang.Runnable");

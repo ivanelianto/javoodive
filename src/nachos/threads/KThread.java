@@ -1,6 +1,8 @@
 package nachos.threads;
 
-import nachos.machine.*;
+import nachos.machine.Lib;
+import nachos.machine.Machine;
+import nachos.machine.TCB;
 
 /**
  * A KThread is a thread that can be used to execute Nachos kernel code. Nachos
@@ -433,7 +435,6 @@ public class KThread
 		{
 			for (int i = 0; i < 5; i++)
 			{
-				System.out.println("*** thread " + which + " looped " + i + " times");
 				currentThread.yield();
 			}
 		}

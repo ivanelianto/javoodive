@@ -2,7 +2,7 @@
 
 package nachos.machine;
 
-import nachos.security.*;
+import nachos.security.Privilege;
 
 /**
  * A hardware timer generates a CPU timer interrupt approximately every 500
@@ -24,8 +24,6 @@ public final class Timer
 	 */
 	public Timer(Privilege privilege)
 	{
-		System.out.print(" timer");
-
 		this.privilege = privilege;
 
 		timerInterrupt = new Runnable()

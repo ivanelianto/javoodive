@@ -2,9 +2,9 @@
 
 package nachos.machine;
 
-import nachos.security.*;
-
 import java.io.IOException;
+
+import nachos.security.Privilege;
 
 /**
  * A text-based console that uses System.in and System.out.
@@ -19,8 +19,6 @@ public class StandardConsole implements SerialConsole
 	 */
 	public StandardConsole(Privilege privilege)
 	{
-		System.out.print(" console");
-
 		this.privilege = privilege;
 
 		receiveInterrupt = new Runnable()

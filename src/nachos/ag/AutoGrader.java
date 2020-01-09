@@ -43,11 +43,7 @@ public class AutoGrader
 
 		extractArguments(args);
 
-		System.out.print(" grader");
-
 		init();
-
-		System.out.print("\n");
 
 		kernel = (Kernel) Lib.constructObject(Config.getString("Kernel.kernel"));
 		kernel.initialize(args);

@@ -2,11 +2,11 @@
 
 package nachos.machine;
 
-import java.util.HashMap;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.StreamTokenizer;
+import java.util.HashMap;
 
 /**
  * Provides routines to access the Nachos configuration.
@@ -22,8 +22,6 @@ public final class Config
 	 */
 	public static void load(String fileName)
 	{
-		System.out.print(" config");
-
 		Lib.assertTrue(!loaded);
 		loaded = true;
 

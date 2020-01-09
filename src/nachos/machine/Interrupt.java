@@ -2,11 +2,10 @@
 
 package nachos.machine;
 
-import nachos.security.*;
-
-import java.util.TreeSet;
 import java.util.Iterator;
-import java.util.SortedSet;
+import java.util.TreeSet;
+
+import nachos.security.Privilege;
 
 /**
  * The <tt>Interrupt</tt> class emulates low-level interrupt hardware. The
@@ -49,8 +48,6 @@ public final class Interrupt
 	 */
 	public Interrupt(Privilege privilege)
 	{
-		System.out.print(" interrupt");
-
 		this.privilege = privilege;
 		privilege.interrupt = new InterruptPrivilege();
 
