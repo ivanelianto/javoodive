@@ -4,6 +4,8 @@ import java.util.Random;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.moandjiezana.toml.Toml;
+
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.OpenFile;
@@ -17,13 +19,25 @@ public class MainSystem
 {
 	private static final int SERVER_ADDRESS = 0;
 	private static final String USER_FILENAME = "users.b40";
+	private static final String HELP_FILENAME = "help.toml";
 	private NetworkLink nl;
 
 	public MainSystem()
 	{
-		boot();
-		loadUsers();
-		autoLoginByLinkAddress();
+		OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
+		byte[] bytes = new byte[file.length()];
+		file.read(bytes, 0, bytes.length);
+		file.close();
+
+		String rawHelpText = new String(bytes);
+		
+		Toml toml = new Toml().read(rawHelpText);
+		String open = toml.getString("order.open.description");
+		System.out.println(open);
+		
+//		boot();
+//		loadUsers();
+//		autoLoginByLinkAddress();
 	}
 
 	public static void printGreetingMesssage()
