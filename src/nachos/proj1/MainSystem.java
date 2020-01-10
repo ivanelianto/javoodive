@@ -1,5 +1,7 @@
 package nachos.proj1;
 
+import java.util.Random;
+
 import org.yaml.snakeyaml.Yaml;
 
 import nachos.machine.Machine;
@@ -8,14 +10,13 @@ import nachos.machine.OpenFile;
 import nachos.proj1.models.UserYamlConstructor;
 import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Concealer;
-import nachos.proj1.utilities.Console;
 import nachos.proj2.ServerSystem;
+import nachos.proj3.ClientSystem;
 
 public class MainSystem
 {
 	private static final int SERVER_ADDRESS = 0;
 	private static final String USER_FILENAME = "users.b40";
-	private Console console;
 	private NetworkLink nl;
 
 	public MainSystem()
@@ -25,9 +26,15 @@ public class MainSystem
 		autoLoginByLinkAddress();
 	}
 
+	public static void printGreetingMesssage()
+	{
+		String text = String.format("Welcome, to Javoodive. Type \"./help\" to view all commands help.");
+		
+		System.out.println(text);
+	}
+	
 	private void boot()
 	{
-		console = Console.getInstance();
 		nl = Machine.networkLink();
 	}
 
@@ -50,6 +57,13 @@ public class MainSystem
 		if (this.nl.getLinkAddress() == SERVER_ADDRESS)
 		{
 			new ServerSystem();
+		}
+		else
+		{
+			Random random = new Random();
+			int randomIndex = random.nextInt(UserRepository.size());
+			
+			new ClientSystem(UserRepository.getByIndex(randomIndex));
 		}
 	}
 }

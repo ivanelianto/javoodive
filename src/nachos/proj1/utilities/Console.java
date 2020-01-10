@@ -73,6 +73,20 @@ public class Console
 	{
 		print(obj + "\n");
 	}
+	
+	public void cls()
+	{
+		for (int i = 0; i < 25; i++)
+			println();
+	}
+	
+	public void printLineSeparator()
+	{
+		for (int i = 0; i < 25; i++)
+			print("=");
+		
+		println();
+	}
 
 	class ConsoleReceiveInterruptHandler implements Runnable
 	{
@@ -105,6 +119,15 @@ public class Console
 		@Override
 		public void run()
 		{
+			try
+			{
+				Thread.sleep(50);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			
 			sem.V();
 		}
 	}

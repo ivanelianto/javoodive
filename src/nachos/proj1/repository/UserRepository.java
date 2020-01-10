@@ -18,6 +18,11 @@ public class UserRepository
 		return users;
 	}
 	
+	public static User getByIndex(int index)
+	{
+		return users.get(index);
+	}
+	
 	public static void add(User user)
 	{
 		users.add(user);
@@ -26,5 +31,10 @@ public class UserRepository
 	public static void delete(User user)
 	{
 		users.remove(user);
+	}
+	
+	public static int size()
+	{
+		return users.size();
 	}
 }
