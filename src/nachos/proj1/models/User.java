@@ -7,6 +7,7 @@ public class User
 	private static final int ID_LENGTH = 33;
 	private String id;
 	private String username;
+	private String name;
 	private int balance;
 
 	public User()
@@ -14,17 +15,19 @@ public class User
 		this.id = generateID();
 	}
 
-	public User(String username)
+	public User(String username, String name, int balance)
 	{
 		this();
 		this.username = username;
-		this.balance = 0;
+		this.name = name;
+		this.balance = balance;
 	}
 
-	public User(String username, int balance)
+	public User(String id, String username, String name, int balance)
 	{
-		this();
+		this.id = id;
 		this.username = username;
+		this.name = name;
 		this.balance = balance;
 	}
 
@@ -48,6 +51,16 @@ public class User
 		this.username = username;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
 	public int getBalance()
 	{
 		return balance;
@@ -67,22 +80,19 @@ public class User
 		while (sb.length() < ID_LENGTH)
 		{
 			int charCode = random.nextInt('z');
-			
+
 			if (isAcceptableCharCode(charCode))
 				sb.append((char) charCode);
 		}
-		
+
 		String result = sb.toString();
-		
-		return result.substring(0, 1).toUpperCase() +
-				result.substring(1);
+
+		return result.substring(0, 1).toUpperCase() + result.substring(1);
 	}
 
 	private boolean isAcceptableCharCode(int charCode)
 	{
-		return isDigit(charCode)
-			|| isUppercaseLetter(charCode)
-			|| isLowercaseLetter(charCode);
+		return isDigit(charCode) || isUppercaseLetter(charCode) || isLowercaseLetter(charCode);
 	}
 
 	private boolean isLowercaseLetter(int charCode)
