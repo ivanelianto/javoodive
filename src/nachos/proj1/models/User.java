@@ -78,6 +78,16 @@ public class User
 		System.out.println(String.format("Name     : %s", this.name));
 		System.out.println(String.format("Balance  : %d", this.balance));
 	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%s#%s#%s#%d", 
+				this.id,
+				this.username,
+				this.name,
+				this.balance);
+	}
 
 	private String generateID()
 	{

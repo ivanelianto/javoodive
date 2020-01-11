@@ -110,7 +110,11 @@ public class Console
 
 		public String getUserInput()
 		{
-			return userInput;
+			StringBuilder sb = new StringBuilder(userInput);
+			
+			this.userInput = "";
+			
+			return sb.toString();
 		}
 	}
 
@@ -119,14 +123,14 @@ public class Console
 		@Override
 		public void run()
 		{
-			try
-			{
-				Thread.sleep(50);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+//			try
+//			{
+//				Thread.sleep(50);
+//			}
+//			catch (InterruptedException e)
+//			{
+//				e.printStackTrace();
+//			}
 			
 			sem.V();
 		}

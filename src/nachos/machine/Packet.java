@@ -111,7 +111,7 @@ public class Packet
 	 * The maximum length, in bytes, of a packet that can be sent or received on
 	 * the network.
 	 */
-	public static final int maxPacketLength = 32;
+	public static final int maxPacketLength = 1024;
 	/**
 	 * The maximum number of content bytes (not including the header). Note that
 	 * this is just <tt>maxPacketLength - headerLength</tt>.

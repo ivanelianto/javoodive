@@ -1,10 +1,9 @@
 package nachos.proj1;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.yaml.snakeyaml.Yaml;
-
-import com.moandjiezana.toml.Toml;
 
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
@@ -15,29 +14,30 @@ import nachos.proj1.utilities.Concealer;
 import nachos.proj2.ServerSystem;
 import nachos.proj3.ClientSystem;
 
-public class MainSystem
+public class MainSystem implements Mediator
 {
 	private static final int SERVER_ADDRESS = 0;
 	private static final String USER_FILENAME = "users.b40";
 	private static final String HELP_FILENAME = "help.toml";
 	private NetworkLink nl;
-
+	private ArrayList<CustomSystem> systems;
+	
 	public MainSystem()
 	{
-		OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
-		byte[] bytes = new byte[file.length()];
-		file.read(bytes, 0, bytes.length);
-		file.close();
-
-		String rawHelpText = new String(bytes);
+//		OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
+//		byte[] bytes = new byte[file.length()];
+//		file.read(bytes, 0, bytes.length);
+//		file.close();
+//
+//		String rawHelpText = new String(bytes);
+//		
+//		Toml toml = new Toml().read(rawHelpText);
+//		String open = toml.getString("order.open.description");
+//		System.out.println(open);
 		
-		Toml toml = new Toml().read(rawHelpText);
-		String open = toml.getString("order.open.description");
-		System.out.println(open);
-		
-//		boot();
-//		loadUsers();
-//		autoLoginByLinkAddress();
+		boot();
+		loadUsers();
+		autoLoginByLinkAddress();
 	}
 
 	public static void printGreetingMesssage()
@@ -50,6 +50,7 @@ public class MainSystem
 	private void boot()
 	{
 		nl = Machine.networkLink();
+		systems = new ArrayList<>();
 	}
 
 	private void loadUsers()
@@ -68,16 +69,32 @@ public class MainSystem
 
 	private void autoLoginByLinkAddress()
 	{
+		CustomSystem system = null;
+		
 		if (this.nl.getLinkAddress() == SERVER_ADDRESS)
 		{
-			new ServerSystem();
+			system = new ServerSystem();
 		}
 		else
 		{
 			Random random = new Random();
 			int randomIndex = random.nextInt(UserRepository.size());
 			
-			new ClientSystem(UserRepository.getByIndex(randomIndex));
+			system = new ClientSystem(UserRepository.getByIndex(randomIndex));
+		}
+		
+		systems.add(system);
+	}
+
+	@Override
+	public void broadcast(CustomSystem sender)
+	{
+		for (CustomSystem system : systems)
+		{
+			if (system.equals(sender))
+				continue;
+			
+			// Send Packet (Chatnya)
 		}
 	}
 }
