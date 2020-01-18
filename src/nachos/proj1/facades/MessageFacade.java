@@ -4,14 +4,17 @@ import nachos.machine.MalformedPacketException;
 import nachos.machine.NetworkLink;
 import nachos.machine.Packet;
 import nachos.proj1.models.Message;
+import nachos.proj1.models.TextMessage;
 import nachos.proj1.models.User;
-import nachos.proj1.utilities.Concealer;
 import nachos.threads.Semaphore;
 
 public class MessageFacade
 {
+	private static final int MESSAGE_CONTENT_INDEX = 3;
+	private static final int USER_INDEX = 2;
+	private static final int DESTINATION_ADDRESS_INDEX = 1;
 	private static MessageFacade instance;
-	
+
 	private MessageFacade()
 	{
 	}
@@ -23,45 +26,29 @@ public class MessageFacade
 		return instance;
 	}
 
-	public void sendMessage(NetworkLink nl, Semaphore sem, Message message)
+	public void sendMessage(NetworkLink nl, Semaphore semaphore, Message message)
 	{
-		int address = nl.getLinkAddress();
-
 		try
 		{
 			String content = message.toString();
-			content = Concealer.getInstance().encode(content);
-			
-			Packet packet = new Packet(message.getDestinationAddress(), address, content.getBytes());
+			Packet packet = new Packet(message.getDstAddress(), nl.getLinkAddress(), content.getBytes());
 			nl.send(packet);
-			sem.P();
+			semaphore.P();
 		}
 		catch (MalformedPacketException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
-	public Message parseMessage(Packet packet)
+
+	public TextMessage parseTextMessage(String rawData)
 	{
-		String encodedData = new String(packet.contents);
-		String rawData = Concealer.getInstance().decode(encodedData);
-		String[] data = rawData.split("@@@");
-		
-		User user = getUserFromMessage(data[1]);
-		String messageContent = data[2];
-		
-		return new Message(user, packet.dstLink, messageContent);
-	}
-	
-	private User getUserFromMessage(String rawUser)
-	{
-		String[] fields = rawUser.split("#");
-		
-		return new User(
-				fields[0],
-				fields[1],
-				fields[2],
-				Integer.parseInt(fields[3]));
+		String[] data = rawData.split(TextMessage.MESSAGE_PART_DELIMETER);
+
+		int dstAddress = Integer.parseInt(data[DESTINATION_ADDRESS_INDEX]);
+		User user = new User(data[USER_INDEX]);
+		String messageContent = data[MESSAGE_CONTENT_INDEX];
+
+		return new TextMessage(dstAddress, user, messageContent);
 	}
 }

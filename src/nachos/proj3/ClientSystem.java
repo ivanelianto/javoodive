@@ -4,77 +4,56 @@ import java.awt.Toolkit;
 
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
-import nachos.proj1.CustomSystem;
+import nachos.machine.Packet;
 import nachos.proj1.MainSystem;
+import nachos.proj1.Mediator;
+import nachos.proj1.ObservableSystem;
 import nachos.proj1.facades.MessageFacade;
-import nachos.proj1.models.Message;
+import nachos.proj1.models.TextMessage;
 import nachos.proj1.models.User;
+import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Console;
+import nachos.proj1.utilities.DateHelper;
 import nachos.threads.Semaphore;
 
-public class ClientSystem implements CustomSystem
+public class ClientSystem implements ObservableSystem
 {
-	private static final int SERVER_ADDRESS = 0;
 	private Console console;
-	private Semaphore sem;
+	private Semaphore semaphore;
 	private NetworkLink nl;
 	private User user;
-	private MessageFacade messageManager;
-	
-	public ClientSystem(User user)
+	private Mediator mediator;
+
+	public ClientSystem(Mediator mediator, int userIndex)
 	{
-		this.user = user;
-		
+		this.mediator = mediator;
+		this.user = UserRepository.getByIndex(userIndex);
+		this.console = Console.getInstance();
+		this.semaphore = new Semaphore(0);
+		this.nl = Machine.networkLink();
+		this.nl.setInterruptHandlers(new ClientReceiveInterruptHandler(),
+				new ClientSendInterruptHandler());
 		boot();
-		
-		MainSystem.printGreetingMesssage();
-		
-		Toolkit.getDefaultToolkit().beep();
-		
-		while(true)
-		{
-			System.out.print(String.format("%s@javoodive => ", this.user.getUsername()));
-			
-			String userInput = console.read();
-			
-			Message message = new Message(this.user, SERVER_ADDRESS, userInput);
-			
-			messageManager.sendMessage(this.nl, this.sem, message);
-		}
-	}
-	
-	class ReceiveInterruptHandler implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			sem.V();
-		}
-	}
-	
-	class SendInterruptHandler implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			sem.V();
-		}
 	}
 
 	@Override
 	public void boot()
 	{
-		this.console = Console.getInstance();
-		this.sem  = new Semaphore(0);
-		this.nl = Machine.networkLink();
-		this.nl.setInterruptHandlers(
-				new ReceiveInterruptHandler(), 
-				new SendInterruptHandler());
-		this.messageManager = MessageFacade.getInstance();
-		
 		console.println("Auto logged-in system, logged-in as :\n");
 		this.user.printUserInfo();
 		console.printLineSeparator();
+		MainSystem.printGreetingMesssage();
+
+		Toolkit.getDefaultToolkit().beep();
+
+		while (true)
+		{
+			System.out.print(String.format("%s@javoodive => ", this.user.getUsername()));
+			String userInput = console.read();
+
+			TextMessage message = new TextMessage(MainSystem.SERVER_ADDRESS, this.user, userInput);
+			MessageFacade.getInstance().sendMessage(this.nl, this.semaphore, message);
+		}
 	}
 
 	@Override
@@ -86,12 +65,43 @@ public class ClientSystem implements CustomSystem
 	@Override
 	public Semaphore getSemaphore()
 	{
-		return this.sem;
+		return this.semaphore;
 	}
 
 	@Override
 	public NetworkLink getNetworkLink()
 	{
 		return this.nl;
+	}
+
+	@Override
+	public void displayReceivedMessage(TextMessage message)
+	{
+		System.out.printf("%s | %s :\n%s\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
+				message.getContent());
+
+		System.out.print(String.format("\n\n%s@javoodive => ", this.user.getUsername()));
+	}
+
+	class ClientReceiveInterruptHandler implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			Packet packet = nl.receive();
+			String encodedData = new String(packet.contents);
+			TextMessage message = MessageFacade.getInstance().parseTextMessage(encodedData);
+			displayReceivedMessage(message);
+			semaphore.V();
+		}
+	}
+
+	class ClientSendInterruptHandler implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			semaphore.V();
+		}
 	}
 }

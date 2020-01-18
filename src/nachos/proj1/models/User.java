@@ -5,6 +5,7 @@ import java.util.Random;
 public class User
 {
 	private static final int ID_LENGTH = 33;
+	private static final String USER_FIELD_DELIMETER = "#";
 	private String id;
 	private String username;
 	private String name;
@@ -13,6 +14,16 @@ public class User
 	public User()
 	{
 		this.id = generateID();
+	}
+	
+	public User(String rawData)
+	{
+		String[] fields = rawData.split(USER_FIELD_DELIMETER);
+		
+		this.id = fields[0];
+		this.username = fields[1];
+		this.name = fields[2];
+		this.balance = Integer.parseInt(fields[3]);
 	}
 
 	public User(String username, String name, int balance)
@@ -82,11 +93,16 @@ public class User
 	@Override
 	public String toString()
 	{
-		return String.format("%s#%s#%s#%d", 
-				this.id,
-				this.username,
-				this.name,
-				this.balance);
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.id);
+		sb.append(USER_FIELD_DELIMETER);
+		sb.append(this.username);
+		sb.append(USER_FIELD_DELIMETER);
+		sb.append(this.name);
+		sb.append(USER_FIELD_DELIMETER);
+		sb.append(this.balance);
+		
+		return sb.toString();
 	}
 
 	private String generateID()

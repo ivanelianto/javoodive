@@ -8,49 +8,60 @@ import org.yaml.snakeyaml.Yaml;
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.OpenFile;
+import nachos.machine.Packet;
+import nachos.proj1.facades.MessageFacade;
+import nachos.proj1.models.NewInstanceMessage;
+import nachos.proj1.models.TextMessage;
 import nachos.proj1.models.UserYamlConstructor;
 import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Concealer;
+import nachos.proj1.utilities.Console;
 import nachos.proj2.ServerSystem;
 import nachos.proj3.ClientSystem;
+import nachos.threads.Semaphore;
 
 public class MainSystem implements Mediator
 {
-	private static final int SERVER_ADDRESS = 0;
+	public static final int MEDIATOR_ADDRESS = 0;
+	public static final int SERVER_ADDRESS = 1;
 	private static final String USER_FILENAME = "users.b40";
 	private static final String HELP_FILENAME = "help.toml";
 	private NetworkLink nl;
-	private ArrayList<CustomSystem> systems;
-	
+	private ArrayList<Integer> addresses;
+	private Semaphore semaphore;
+
 	public MainSystem()
 	{
-//		OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
-//		byte[] bytes = new byte[file.length()];
-//		file.read(bytes, 0, bytes.length);
-//		file.close();
-//
-//		String rawHelpText = new String(bytes);
-//		
-//		Toml toml = new Toml().read(rawHelpText);
-//		String open = toml.getString("order.open.description");
-//		System.out.println(open);
-		
-		boot();
+		// OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
+		// byte[] bytes = new byte[file.length()];
+		// file.read(bytes, 0, bytes.length);
+		// file.close();
+		//
+		// String rawHelpText = new String(bytes);
+		//
+		// Toml toml = new Toml().read(rawHelpText);
+		// String open = toml.getString("order.open.description");
+		// System.out.println(open);
+
 		loadUsers();
-		autoLoginByLinkAddress();
+		boot();
 	}
 
 	public static void printGreetingMesssage()
 	{
 		String text = String.format("Welcome, to Javoodive. Type \"./help\" to view all commands help.");
-		
+
 		System.out.println(text);
 	}
-	
+
 	private void boot()
 	{
-		nl = Machine.networkLink();
-		systems = new ArrayList<>();
+		this.nl = Machine.networkLink();
+		this.nl.setInterruptHandlers(new MainSystemReceiveInterruptHandler(), new MainSystemSendInterruptHandler());
+		this.addresses = new ArrayList<>();
+		this.semaphore = new Semaphore(0);
+		autoLoginByLinkAddress();
+		Console.getInstance().read();
 	}
 
 	private void loadUsers()
@@ -62,39 +73,93 @@ public class MainSystem implements Mediator
 
 		String encodedText = new String(bytes);
 		String decodedText = Concealer.getInstance().decode(encodedText);
-		
+
 		Yaml yaml = new Yaml(new UserYamlConstructor());
 		UserRepository.load(yaml.load(decodedText));
 	}
 
 	private void autoLoginByLinkAddress()
 	{
-		CustomSystem system = null;
-		
-		if (this.nl.getLinkAddress() == SERVER_ADDRESS)
+		if (this.nl.getLinkAddress() == MEDIATOR_ADDRESS)
 		{
-			system = new ServerSystem();
+			System.out.println("Mediator system booted-up.");
 		}
 		else
 		{
 			Random random = new Random();
 			int randomIndex = random.nextInt(UserRepository.size());
-			
-			system = new ClientSystem(UserRepository.getByIndex(randomIndex));
+
+			this.notifyMediator(nl.getLinkAddress(), randomIndex);
+
+			if (nl.getLinkAddress() == SERVER_ADDRESS)
+				new ServerSystem(this);
+			else
+				new ClientSystem(this, randomIndex);
 		}
-		
-		systems.add(system);
 	}
 
 	@Override
-	public void broadcast(CustomSystem sender)
+	public void broadcast(TextMessage message)
 	{
-		for (CustomSystem system : systems)
+		message.setDstAddress(MEDIATOR_ADDRESS);
+		MessageFacade.getInstance().sendMessage(nl, semaphore, message);
+	}
+
+	@Override
+	public void notifyMediator(int srcAddress, int userIndex)
+	{
+		NewInstanceMessage instanceMessage = new NewInstanceMessage(nl.getLinkAddress(), MEDIATOR_ADDRESS, userIndex);
+		MessageFacade.getInstance().sendMessage(nl, semaphore, instanceMessage);
+	}
+
+	class MainSystemReceiveInterruptHandler implements Runnable
+	{
+		@Override
+		public void run()
 		{
-			if (system.equals(sender))
-				continue;
+			Packet packet = nl.receive();
+
+			String content = new String(packet.contents);
 			
-			// Send Packet (Chatnya)
+			String[] rawData = content.split("@@@");
+
+			switch (rawData[0])
+			{
+				case "TextMessage":
+					processTextMessage(content);
+					break;
+				case "NewInstanceMessage":
+					processNewInstanceMessage(rawData);
+					break;
+			}
+
+			semaphore.V();
+		}
+
+		private void processTextMessage(String rawData)
+		{
+			for (Integer address : addresses)
+			{
+				TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
+				System.out.printf("%d:%s\n", address, message.getContent());
+				message.setDstAddress(address);
+				MessageFacade.getInstance().sendMessage(nl, semaphore, message);
+			}
+		}
+
+		private void processNewInstanceMessage(String... rawData)
+		{
+			int senderAddress = Integer.parseInt(rawData[1]);
+			addresses.add(senderAddress);
+		}
+	}
+
+	class MainSystemSendInterruptHandler implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			semaphore.V();
 		}
 	}
 }
