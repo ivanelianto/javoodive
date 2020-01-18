@@ -141,7 +141,6 @@ public class MainSystem implements Mediator
 			for (Integer address : addresses)
 			{
 				TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
-				System.out.printf("%d:%s\n", address, message.getContent());
 				message.setDstAddress(address);
 				MessageFacade.getInstance().sendMessage(nl, semaphore, message);
 			}

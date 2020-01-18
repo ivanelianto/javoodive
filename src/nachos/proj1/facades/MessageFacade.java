@@ -6,6 +6,7 @@ import nachos.machine.Packet;
 import nachos.proj1.models.Message;
 import nachos.proj1.models.TextMessage;
 import nachos.proj1.models.User;
+import nachos.proj1.repository.UserRepository;
 import nachos.threads.Semaphore;
 
 public class MessageFacade
@@ -46,7 +47,10 @@ public class MessageFacade
 		String[] data = rawData.split(TextMessage.MESSAGE_PART_DELIMETER);
 
 		int dstAddress = Integer.parseInt(data[DESTINATION_ADDRESS_INDEX]);
-		User user = new User(data[USER_INDEX]);
+		
+		String userId = data[USER_INDEX];
+		User user = UserRepository.findById(userId);
+
 		String messageContent = data[MESSAGE_CONTENT_INDEX];
 
 		return new TextMessage(dstAddress, user, messageContent);

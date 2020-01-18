@@ -77,10 +77,10 @@ public class ClientSystem implements ObservableSystem
 	@Override
 	public void displayReceivedMessage(TextMessage message)
 	{
-		System.out.printf("%s | %s :\n%s\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
+		System.out.printf("\n%s | %s :\n%s\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
 				message.getContent());
 
-		System.out.print(String.format("\n\n%s@javoodive => ", this.user.getUsername()));
+		System.out.print(String.format("\n%s@javoodive => ", this.user.getUsername()));
 	}
 
 	class ClientReceiveInterruptHandler implements Runnable

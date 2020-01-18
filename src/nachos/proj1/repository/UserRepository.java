@@ -18,6 +18,14 @@ public class UserRepository
 		return users;
 	}
 	
+	public static User findById(String id)
+	{
+		return users.stream()
+				.filter(x -> x.getId().equals(id))
+				.findFirst()
+				.orElse(null);
+	}
+	
 	public static User getByIndex(int index)
 	{
 		return users.get(index);

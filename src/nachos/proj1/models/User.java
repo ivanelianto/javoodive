@@ -93,16 +93,7 @@ public class User
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.id);
-		sb.append(USER_FIELD_DELIMETER);
-		sb.append(this.username);
-		sb.append(USER_FIELD_DELIMETER);
-		sb.append(this.name);
-		sb.append(USER_FIELD_DELIMETER);
-		sb.append(this.balance);
-		
-		return sb.toString();
+		return this.id;
 	}
 
 	private String generateID()

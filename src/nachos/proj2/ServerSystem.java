@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.Packet;
-import nachos.proj1.MainSystem;
 import nachos.proj1.Mediator;
 import nachos.proj1.ObservableSystem;
 import nachos.proj1.facades.MessageFacade;
@@ -78,20 +77,9 @@ public class ServerSystem implements ObservableSystem
 			String rawData = new String(packet.contents);
 			TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
 			
-			System.out.println(packet.srcLink + " (src) : (dst) " + packet.dstLink);
-			System.out.println(message.getContent());
-			
-			if (packet.srcLink == MainSystem.MEDIATOR_ADDRESS)
-			{
-				System.out.println("Display Received Message");
-				displayReceivedMessage(message);
-			}
-			else
-			{
-				System.out.println("Broadcast Cuyyy");
-				mediator.broadcast(message);
-				// Process Command
-			}
+			displayReceivedMessage(message);
+			mediator.broadcast(message);
+			// Process Command
 			
 			sem.V();
 		}
