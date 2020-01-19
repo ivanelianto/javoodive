@@ -6,11 +6,10 @@ import java.util.Date;
 public class DateHelper
 {
 	private static final String DEFAULT_FORMAT = "MMM dd yyyy HH:mm:ss";
+	private static final SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_FORMAT);
 	
-	public static String getCurrentFormattedDate()
+	public static String getFormattedDate(Date date)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_FORMAT);
-		
-		return sdf.format(new Date());
+		return sdf.format(date);
 	}
 }

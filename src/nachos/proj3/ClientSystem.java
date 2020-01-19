@@ -1,6 +1,7 @@
 package nachos.proj3;
 
 import java.awt.Toolkit;
+import java.util.Date;
 
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
@@ -74,7 +75,7 @@ public class ClientSystem implements ObservableSystem
 	@Override
 	public void displayReceivedMessage(TextMessage message)
 	{
-		System.out.printf("\n%s | %s :\n%s\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
+		System.out.printf("\n%s | %s :\n%s\n", DateHelper.getFormattedDate(new Date()), message.getUser().getUsername(),
 				message.getContent());
 
 		System.out.print(String.format("\n%s@javoodive => ", this.user.getUsername()));

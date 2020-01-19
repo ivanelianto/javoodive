@@ -1,6 +1,7 @@
 package nachos.proj2;
 
 import java.awt.Toolkit;
+import java.util.Date;
 
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
@@ -57,7 +58,7 @@ public class ServerSystem implements ObservableSystem
 	@Override
 	public void displayReceivedMessage(TextMessage message)
 	{
-		System.out.printf("%s | %s :\n%s\n\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
+		System.out.printf("%s | %s :\n%s\n\n", DateHelper.getFormattedDate(new Date()), message.getUser().getUsername(),
 				message.getContent());
 	}
 
@@ -81,7 +82,7 @@ public class ServerSystem implements ObservableSystem
 			String response = service.interpret(message.getContent());
 
 			if (!response.isEmpty())
-				System.out.printf("%s | %s :\n%s\n\n", DateHelper.getCurrentFormattedDate(), BOT_NAME,
+				System.out.printf("%s | %s :\n%s\n\n", DateHelper.getFormattedDate(new Date()), BOT_NAME,
 						response.trim());
 		}
 	}
