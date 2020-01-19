@@ -14,7 +14,7 @@ import nachos.proj1.repository.MenuRepository;
 import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Console;
 import nachos.proj1.utilities.YamlConfigFile;
-import nachos.proj2.CommandService;
+import nachos.proj2.HelpDescription;
 import nachos.proj2.ServerSystem;
 import nachos.proj3.ClientSystem;
 import nachos.threads.Semaphore;
@@ -26,24 +26,15 @@ public class MainSystem
 	private static final String USER_FILENAME = "users.b40";
 	private static final String MENU_FILENAME = "menus.b40";
 
-	public static int userIndex;
 	private NetworkLink nl;
 	private ArrayList<Integer> addresses;
 	private Semaphore semaphore;
 
 	public MainSystem()
 	{
-		// CommandService.getInstance().interpret("/help");
-
 		loadUsers();
 		loadMenus();
-		// boot();
-
-		CommandService.getInstance().interpret("/order add 10 Yam Kwe");
-		CommandService.getInstance().interpret("/order add Yam Mie");
-		// CommandService.getInstance().interpret("/order add Nasi Goreng");
-
-		// CommandService.getInstance().interpret("/order remove Nasi Goreng");
+		boot();
 	}
 
 	public static void printGreetingMesssage()
@@ -59,6 +50,7 @@ public class MainSystem
 		this.nl.setInterruptHandlers(new MainSystemReceiveInterruptHandler(), new MainSystemSendInterruptHandler());
 		this.addresses = new ArrayList<>();
 		this.semaphore = new Semaphore(0);
+		HelpDescription.getInstance();
 		autoLoginByLinkAddress();
 		Console.getInstance().read();
 	}
@@ -87,7 +79,6 @@ public class MainSystem
 		{
 			Random random = new Random();
 			int randomIndex = random.nextInt(UserRepository.size());
-			this.userIndex = randomIndex;
 
 			if (nl.getLinkAddress() == SERVER_ADDRESS)
 				new ServerSystem();

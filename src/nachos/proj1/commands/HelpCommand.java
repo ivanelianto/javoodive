@@ -7,14 +7,12 @@ import java.util.Set;
 
 import com.moandjiezana.toml.Toml;
 
-import nachos.proj1.utilities.TomlConfigFile;
+import nachos.proj2.HelpDescription;
 
 public class HelpCommand extends QueryCommand
 {
-	private static final String HELP_FILENAME = "help.toml";
 	private ArrayList<String> arguments;
-	private Toml toml;
-
+	
 	public HelpCommand(ArrayList<String> arguments)
 	{
 		super(arguments);
@@ -23,17 +21,13 @@ public class HelpCommand extends QueryCommand
 	@Override
 	public String execute()
 	{
-		if (toml == null)
-		{
-			TomlConfigFile tomlConfigFile = new TomlConfigFile(HELP_FILENAME, false);
-			toml = tomlConfigFile.getResult();
-		}
-
+		Toml toml = HelpDescription.getInstance().getHelps();
+		
 		String helpText = "";
 		
-		if (arguments.size() < 1)
+		if (arguments == null)
 		{
-			iterateHelp("", toml);
+			return iterateHelp("", toml);
 		}
 		else
 		{
@@ -48,40 +42,36 @@ public class HelpCommand extends QueryCommand
 
 			sb.append("description");
 
-			helpText = toml.getString(sb.toString());
-		}
-		
-		if (helpText == null)
-			return "Undefined command.";
-		else
-		{
-			String command = String.join(" ", arguments);
-			
-			return String.format("/%s\n%s", command, helpText);
+			return toml.getString(sb.toString());
 		}
 	}
 
-	private void iterateHelp(String baseCommand, Toml toml)
+	private String iterateHelp(String baseCommand, Toml toml)
 	{
+		StringBuilder sb = new StringBuilder();
 		Set<Entry<String, Object>> helps = toml.entrySet();
 		Iterator<Entry<String, Object>> helpsIterator = helps.iterator();
+		
 		while (helpsIterator.hasNext())
 		{
 			Entry<String, Object> help = helpsIterator.next();
 
 			if (help.getValue() instanceof Toml)
 			{
+				
 				if (!baseCommand.isEmpty())
-					System.out.printf("/%s %s\n", baseCommand, help.getKey());
+					sb.append(String.format("/%s %s\n", baseCommand, help.getKey()));
 				else
-					System.out.printf("/%s\n", help.getKey());
+					sb.append(String.format("/%s\n", help.getKey()));
 
 				Toml keys = (Toml) help.getValue();
 				String commandDescription = keys.getString("description");
-				System.out.printf("%s\n\n", commandDescription);
+				sb.append(String.format("%s\n\n", commandDescription));
 
-				iterateHelp(help.getKey(), keys);
+				sb.append(iterateHelp(help.getKey(), keys));
 			}
 		}
+		
+		return sb.toString();
 	}
 }
