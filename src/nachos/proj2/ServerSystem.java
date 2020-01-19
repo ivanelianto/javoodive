@@ -17,15 +17,13 @@ public class ServerSystem implements ObservableSystem
 	private Console console;
 	private Semaphore sem;
 	private NetworkLink nl;
-	
+
 	public ServerSystem()
 	{
 		this.console = Console.getInstance();
 		this.sem = new Semaphore(0);
 		this.nl = Machine.networkLink();
-		this.nl.setInterruptHandlers(
-				new ReceiveInterruptHandler(), 
-				new SendInterruptHandler());
+		this.nl.setInterruptHandlers(new ReceiveInterruptHandler(), new SendInterruptHandler());
 		boot();
 	}
 
@@ -59,29 +57,35 @@ public class ServerSystem implements ObservableSystem
 	@Override
 	public void displayReceivedMessage(TextMessage message)
 	{
-		System.out.printf("%s | %s :\n%s\n\n",
-				DateHelper.getCurrentFormattedDate(),
-				message.getUser().getUsername(),
+		System.out.printf("%s | %s :\n%s\n\n", DateHelper.getCurrentFormattedDate(), message.getUser().getUsername(),
 				message.getContent());
 	}
-	
+
 	class ReceiveInterruptHandler implements Runnable
 	{
+		private static final String BOT_NAME = "Javoodive";
+
 		@Override
 		public void run()
 		{
 			Packet packet = nl.receive();
 			sem.V();
-			
+
 			String rawData = new String(packet.contents);
 			TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
-			
+
 			displayReceivedMessage(message);
-			
-			CommandService.getInstance().interpret(message.getContent());
+
+			CommandService service = CommandService.getInstance();
+			service.setSender(message.getUser());
+			String response = service.interpret(message.getContent());
+
+			if (!response.isEmpty())
+				System.out.printf("%s | %s :\n%s\n\n", DateHelper.getCurrentFormattedDate(), BOT_NAME,
+						response.trim());
 		}
 	}
-	
+
 	class SendInterruptHandler implements Runnable
 	{
 		@Override
