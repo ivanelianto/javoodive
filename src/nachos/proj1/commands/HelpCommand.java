@@ -7,14 +7,13 @@ import java.util.Set;
 
 import com.moandjiezana.toml.Toml;
 
-import nachos.machine.Machine;
-import nachos.machine.OpenFile;
+import nachos.proj1.utilities.TomlConfigFile;
 
 public class HelpCommand extends QueryCommand
 {
 	private static final String HELP_FILENAME = "help.toml";
-	private static String rawHelpText;
 	private ArrayList<String> arguments;
+	private Toml toml;
 
 	public HelpCommand(ArrayList<String> arguments)
 	{
@@ -24,19 +23,14 @@ public class HelpCommand extends QueryCommand
 	@Override
 	public String execute()
 	{
-		if (HelpCommand.rawHelpText == null)
+		if (toml == null)
 		{
-			OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
-			byte[] bytes = new byte[file.length()];
-			file.read(bytes, 0, bytes.length);
-			file.close();
-
-			HelpCommand.rawHelpText = new String(bytes);
+			TomlConfigFile tomlConfigFile = new TomlConfigFile(HELP_FILENAME, false);
+			toml = tomlConfigFile.getResult();
 		}
 
 		String helpText = "";
-		Toml toml = new Toml().read(rawHelpText);
-
+		
 		if (arguments.size() < 1)
 		{
 			iterateHelp("", toml);
