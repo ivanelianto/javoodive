@@ -10,7 +10,7 @@ import nachos.proj1.models.User;
 import nachos.proj1.repository.MenuRepository;
 import nachos.proj1.repository.TransactionRepository;
 import nachos.proj1.utilities.DateHelper;
-import nachos.proj2.CommandService;
+import nachos.proj2.services.CommandService;
 
 public class AddOrderCommand extends QueryCommand
 {

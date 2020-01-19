@@ -11,6 +11,7 @@ import nachos.proj1.facades.MessageFacade;
 import nachos.proj1.models.TextMessage;
 import nachos.proj1.utilities.Console;
 import nachos.proj1.utilities.DateHelper;
+import nachos.proj2.services.CommandService;
 import nachos.threads.Semaphore;
 
 public class ServerSystem implements ObservableSystem

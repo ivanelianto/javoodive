@@ -14,8 +14,8 @@ import nachos.proj1.repository.MenuRepository;
 import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Console;
 import nachos.proj1.utilities.YamlConfigFile;
-import nachos.proj2.HelpDescription;
 import nachos.proj2.ServerSystem;
+import nachos.proj2.utilities.HelpDescription;
 import nachos.proj3.ClientSystem;
 import nachos.threads.Semaphore;
 

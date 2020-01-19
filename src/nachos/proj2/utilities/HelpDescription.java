@@ -1,4 +1,4 @@
-package nachos.proj2;
+package nachos.proj2.utilities;
 
 import com.moandjiezana.toml.Toml;
 

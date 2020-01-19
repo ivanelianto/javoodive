@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.moandjiezana.toml.Toml;
 
-import nachos.proj2.HelpDescription;
+import nachos.proj2.utilities.HelpDescription;
 
 public class HelpCommand extends QueryCommand
 {

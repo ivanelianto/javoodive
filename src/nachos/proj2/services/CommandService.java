@@ -1,4 +1,4 @@
-package nachos.proj2;
+package nachos.proj2.services;
 
 import nachos.proj1.commands.QueryCommand;
 import nachos.proj1.commands.builders.QueryCommandBuilder;
