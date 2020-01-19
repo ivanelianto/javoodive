@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class Transaction
 {
-	public static final String NOT_PAID_STATUS = "Not Paid";
 	private User customer;
 	private Menu menu;
 	private int quantity;

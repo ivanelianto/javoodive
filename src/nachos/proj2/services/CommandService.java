@@ -33,6 +33,10 @@ public class CommandService
 		{
 			QueryCommandBuilder builder = new QueryCommandBuilder(messageContent);
 			QueryCommand command = (QueryCommand) builder.getResult();
+			
+			if (command == null)
+				return "Undefined command.";
+			
 			String executionResult = command.execute();
 
 			return executionResult == null ? "" : executionResult;

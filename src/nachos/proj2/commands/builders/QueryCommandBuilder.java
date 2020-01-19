@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import nachos.proj2.commands.AddOrderCommand;
 import nachos.proj2.commands.CancelOrderCommand;
 import nachos.proj2.commands.HelpCommand;
+import nachos.proj2.commands.ShowDebtCommand;
+import nachos.proj2.commands.ShowSummaryCommand;
 
 public class QueryCommandBuilder extends BaseBuilder
 {
@@ -53,6 +55,15 @@ public class QueryCommandBuilder extends BaseBuilder
 	{
 		if (this.commandName.contentEquals("help"))
 			return new HelpCommand(this.getArguments());
+		else if (this.commandName.contentEquals("stat"))
+		{
+			ArrayList<String> arguments = this.getArguments();
+
+			if (arguments.get(SUBCOMMAND_INDEX).contentEquals("debt"))
+				return new ShowDebtCommand(this.getArguments());
+			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("awesomeness"))
+				return new ShowSummaryCommand(this.getArguments());
+		}
 		else if (this.commandName.contentEquals("order"))
 		{
 			ArrayList<String> arguments = this.getArguments();
