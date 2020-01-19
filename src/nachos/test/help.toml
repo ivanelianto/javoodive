@@ -1,15 +1,6 @@
 [order]
 description = "This command is used for action related to food order."
 
-[order.open]
-description = "Open order list."
-
-[order.cancel]
-description = "Cancel order list."
-
-[order.process]
-description = "Process order."
-
 [order.add]
 description = "Add food order."
 
