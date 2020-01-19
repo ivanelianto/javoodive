@@ -4,10 +4,24 @@ import java.util.HashMap;
 
 public class CommandList
 {
-	private static final HashMap<String, Class<?>> commands = new HashMap<>();
+	private static CommandList instance;
+	private final HashMap<String, Class<?>> commands;
 	
-	static
+	private CommandList()
 	{
+		commands = new HashMap<>();
 		commands.put("help", HelpCommand.class);
+	}
+	
+	public static CommandList getInstance()
+	{
+		if (instance == null)
+			instance = new CommandList();
+		return instance;
+	}
+	
+	public Class<?> getCommand(String commandName)
+	{
+		return this.commands.get(commandName);
 	}
 }

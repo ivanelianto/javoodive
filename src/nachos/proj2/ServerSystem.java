@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.Packet;
-import nachos.proj1.Mediator;
 import nachos.proj1.ObservableSystem;
 import nachos.proj1.facades.MessageFacade;
 import nachos.proj1.models.TextMessage;
@@ -18,11 +17,9 @@ public class ServerSystem implements ObservableSystem
 	private Console console;
 	private Semaphore sem;
 	private NetworkLink nl;
-	private Mediator mediator;
 	
-	public ServerSystem(Mediator mediator)
+	public ServerSystem()
 	{
-		this.mediator = mediator;
 		this.console = Console.getInstance();
 		this.sem = new Semaphore(0);
 		this.nl = Machine.networkLink();
@@ -74,14 +71,14 @@ public class ServerSystem implements ObservableSystem
 		public void run()
 		{
 			Packet packet = nl.receive();
+			sem.V();
+			
 			String rawData = new String(packet.contents);
 			TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
 			
 			displayReceivedMessage(message);
-			mediator.broadcast(message);
-			// Process Command
 			
-			sem.V();
+			CommandService.getInstance().interpret(message.getContent());
 		}
 	}
 	

@@ -6,7 +6,6 @@ import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.Packet;
 import nachos.proj1.MainSystem;
-import nachos.proj1.Mediator;
 import nachos.proj1.ObservableSystem;
 import nachos.proj1.facades.MessageFacade;
 import nachos.proj1.models.TextMessage;
@@ -22,11 +21,9 @@ public class ClientSystem implements ObservableSystem
 	private Semaphore semaphore;
 	private NetworkLink nl;
 	private User user;
-	private Mediator mediator;
 
-	public ClientSystem(Mediator mediator, int userIndex)
+	public ClientSystem(int userIndex)
 	{
-		this.mediator = mediator;
 		this.user = UserRepository.getByIndex(userIndex);
 		this.console = Console.getInstance();
 		this.semaphore = new Semaphore(0);
@@ -89,10 +86,11 @@ public class ClientSystem implements ObservableSystem
 		public void run()
 		{
 			Packet packet = nl.receive();
+			semaphore.V();
+
 			String encodedData = new String(packet.contents);
 			TextMessage message = MessageFacade.getInstance().parseTextMessage(encodedData);
 			displayReceivedMessage(message);
-			semaphore.V();
 		}
 	}
 

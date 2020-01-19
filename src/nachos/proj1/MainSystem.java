@@ -9,42 +9,29 @@ import nachos.machine.Machine;
 import nachos.machine.NetworkLink;
 import nachos.machine.OpenFile;
 import nachos.machine.Packet;
-import nachos.proj1.facades.MessageFacade;
-import nachos.proj1.models.NewInstanceMessage;
-import nachos.proj1.models.TextMessage;
 import nachos.proj1.models.UserYamlConstructor;
 import nachos.proj1.repository.UserRepository;
 import nachos.proj1.utilities.Concealer;
 import nachos.proj1.utilities.Console;
+import nachos.proj2.CommandService;
 import nachos.proj2.ServerSystem;
 import nachos.proj3.ClientSystem;
 import nachos.threads.Semaphore;
 
-public class MainSystem implements Mediator
+public class MainSystem
 {
 	public static final int MEDIATOR_ADDRESS = 0;
 	public static final int SERVER_ADDRESS = 1;
 	private static final String USER_FILENAME = "users.b40";
-	private static final String HELP_FILENAME = "help.toml";
 	private NetworkLink nl;
 	private ArrayList<Integer> addresses;
 	private Semaphore semaphore;
 
 	public MainSystem()
 	{
-		// OpenFile file = Machine.stubFileSystem().open(HELP_FILENAME, false);
-		// byte[] bytes = new byte[file.length()];
-		// file.read(bytes, 0, bytes.length);
-		// file.close();
-		//
-		// String rawHelpText = new String(bytes);
-		//
-		// Toml toml = new Toml().read(rawHelpText);
-		// String open = toml.getString("order.open.description");
-		// System.out.println(open);
-
-		loadUsers();
-		boot();
+		CommandService.getInstance().interpret("/help");
+//		loadUsers();
+//		boot();
 	}
 
 	public static void printGreetingMesssage()
@@ -89,27 +76,11 @@ public class MainSystem implements Mediator
 			Random random = new Random();
 			int randomIndex = random.nextInt(UserRepository.size());
 
-			this.notifyMediator(nl.getLinkAddress(), randomIndex);
-
 			if (nl.getLinkAddress() == SERVER_ADDRESS)
-				new ServerSystem(this);
+				new ServerSystem();
 			else
-				new ClientSystem(this, randomIndex);
+				new ClientSystem(randomIndex);
 		}
-	}
-
-	@Override
-	public void broadcast(TextMessage message)
-	{
-		message.setDstAddress(MEDIATOR_ADDRESS);
-		MessageFacade.getInstance().sendMessage(nl, semaphore, message);
-	}
-
-	@Override
-	public void notifyMediator(int srcAddress, int userIndex)
-	{
-		NewInstanceMessage instanceMessage = new NewInstanceMessage(nl.getLinkAddress(), MEDIATOR_ADDRESS, userIndex);
-		MessageFacade.getInstance().sendMessage(nl, semaphore, instanceMessage);
 	}
 
 	class MainSystemReceiveInterruptHandler implements Runnable
@@ -118,6 +89,7 @@ public class MainSystem implements Mediator
 		public void run()
 		{
 			Packet packet = nl.receive();
+			semaphore.V();
 
 			String content = new String(packet.contents);
 			
@@ -125,31 +97,16 @@ public class MainSystem implements Mediator
 
 			switch (rawData[0])
 			{
-				case "TextMessage":
-					processTextMessage(content);
-					break;
 				case "NewInstanceMessage":
-					processNewInstanceMessage(rawData);
+					processNewInstanceMessage(Integer.parseInt(rawData[1]));
 					break;
 			}
+		}
 
+		private void processNewInstanceMessage(int address)
+		{
+			addresses.add(address);
 			semaphore.V();
-		}
-
-		private void processTextMessage(String rawData)
-		{
-			for (Integer address : addresses)
-			{
-				TextMessage message = MessageFacade.getInstance().parseTextMessage(rawData);
-				message.setDstAddress(address);
-				MessageFacade.getInstance().sendMessage(nl, semaphore, message);
-			}
-		}
-
-		private void processNewInstanceMessage(String... rawData)
-		{
-			int senderAddress = Integer.parseInt(rawData[1]);
-			addresses.add(senderAddress);
 		}
 	}
 

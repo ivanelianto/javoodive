@@ -33,6 +33,7 @@ public class MessageFacade
 		{
 			String content = message.toString();
 			Packet packet = new Packet(message.getDstAddress(), nl.getLinkAddress(), content.getBytes());
+			
 			nl.send(packet);
 			semaphore.P();
 		}
