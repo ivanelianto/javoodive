@@ -19,9 +19,4 @@ public class CommandList
 			instance = new CommandList();
 		return instance;
 	}
-	
-	public Class<?> getCommand(String commandName)
-	{
-		return this.commands.get(commandName);
-	}
 }
