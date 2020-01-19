@@ -22,7 +22,7 @@ public class HelpCommand extends QueryCommand
 	}
 
 	@Override
-	public void execute()
+	public String execute()
 	{
 		if (HelpCommand.rawHelpText == null)
 		{
@@ -56,8 +56,15 @@ public class HelpCommand extends QueryCommand
 
 			helpText = toml.getString(sb.toString());
 		}
-
-		System.out.println(helpText);
+		
+		if (helpText == null)
+			return "Undefined command.";
+		else
+		{
+			String command = String.join(" ", arguments);
+			
+			return String.format("/%s\n%s", command, helpText);
+		}
 	}
 
 	private void iterateHelp(String baseCommand, Toml toml)

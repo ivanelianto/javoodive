@@ -29,7 +29,8 @@ public class MainSystem
 
 	public MainSystem()
 	{
-		CommandService.getInstance().interpret("/help");
+//		CommandService.getInstance().interpret("/help");
+		CommandService.getInstance().interpret("/help stat debt");
 //		loadUsers();
 //		boot();
 	}
