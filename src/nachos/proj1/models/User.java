@@ -1,6 +1,6 @@
 package nachos.proj1.models;
 
-import java.util.Random;
+import nachos.proj1.utilities.Concealer;
 
 public class User
 {
@@ -13,7 +13,7 @@ public class User
 
 	public User()
 	{
-		this.id = generateID();
+		this.id = Concealer.getInstance().generateString(ID_LENGTH);
 	}
 	
 	public User(String rawData)
@@ -94,44 +94,5 @@ public class User
 	public String toString()
 	{
 		return this.id;
-	}
-
-	private String generateID()
-	{
-		StringBuilder sb = new StringBuilder();
-
-		Random random = new Random();
-
-		while (sb.length() < ID_LENGTH)
-		{
-			int charCode = random.nextInt('z');
-
-			if (isAcceptableCharCode(charCode))
-				sb.append((char) charCode);
-		}
-
-		String result = sb.toString();
-
-		return result.substring(0, 1).toUpperCase() + result.substring(1);
-	}
-
-	private boolean isAcceptableCharCode(int charCode)
-	{
-		return isDigit(charCode) || isUppercaseLetter(charCode) || isLowercaseLetter(charCode);
-	}
-
-	private boolean isLowercaseLetter(int charCode)
-	{
-		return charCode >= 'a' && charCode <= 'z';
-	}
-
-	private boolean isUppercaseLetter(int charCode)
-	{
-		return charCode >= 'A' && charCode <= 'Z';
-	}
-
-	private boolean isDigit(int charCode)
-	{
-		return charCode >= '0' && charCode <= '9';
 	}
 }
