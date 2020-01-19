@@ -1,10 +1,10 @@
-package nachos.proj1.commands.builders;
+package nachos.proj2.commands.builders;
 
 import java.util.ArrayList;
 
-import nachos.proj1.commands.AddOrderCommand;
-import nachos.proj1.commands.CancelOrderCommand;
-import nachos.proj1.commands.HelpCommand;
+import nachos.proj2.commands.AddOrderCommand;
+import nachos.proj2.commands.CancelOrderCommand;
+import nachos.proj2.commands.HelpCommand;
 
 public class QueryCommandBuilder extends BaseBuilder
 {

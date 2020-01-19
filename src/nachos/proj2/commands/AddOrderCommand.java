@@ -1,4 +1,4 @@
-package nachos.proj1.commands;
+package nachos.proj2.commands;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

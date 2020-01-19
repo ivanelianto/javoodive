@@ -1,14 +1,14 @@
-package nachos.proj1.commands.builders;
+package nachos.proj2.commands;
 
 import java.util.ArrayList;
 
-public abstract class BaseBuilder
+public abstract class QueryCommand implements Command
 {
 	private ArrayList<String> arguments;
-
-	public BaseBuilder()
+	
+	public QueryCommand(ArrayList<String> arguments)
 	{
-		this.arguments = new ArrayList<String>();
+		this.arguments = arguments;
 	}
 
 	public ArrayList<String> getArguments()
@@ -20,6 +20,4 @@ public abstract class BaseBuilder
 	{
 		this.arguments = arguments;
 	}
-
-	public abstract Object getResult();
 }

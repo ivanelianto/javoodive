@@ -1,8 +1,8 @@
 package nachos.proj2.services;
 
-import nachos.proj1.commands.QueryCommand;
-import nachos.proj1.commands.builders.QueryCommandBuilder;
 import nachos.proj1.models.User;
+import nachos.proj2.commands.QueryCommand;
+import nachos.proj2.commands.builders.QueryCommandBuilder;
 
 public class CommandService
 {
