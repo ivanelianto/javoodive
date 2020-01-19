@@ -87,7 +87,6 @@ public class User
 		System.out.println(String.format("ID       : %s", this.id));
 		System.out.println(String.format("Username : %s", this.username));
 		System.out.println(String.format("Name     : %s", this.name));
-		System.out.println(String.format("Balance  : %d", this.balance));
 	}
 	
 	@Override
