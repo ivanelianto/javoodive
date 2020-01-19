@@ -2,22 +2,24 @@ package nachos.proj1.commands.builders;
 
 import java.util.ArrayList;
 
+import nachos.proj1.commands.AddOrderCommand;
+import nachos.proj1.commands.CancelOrderCommand;
 import nachos.proj1.commands.HelpCommand;
-import nachos.proj1.commands.QueryCommand;
 
 public class QueryCommandBuilder extends BaseBuilder
 {
+	private static final int SUBCOMMAND_INDEX = 0;
 	private static final int COMMAND_NAME_INDEX = 1;
 	private String commandName;
 
 	public QueryCommandBuilder(String query)
 	{
 		int firstSpaceIndex = query.indexOf(" ");
-		
+
 		if (firstSpaceIndex != -1)
 		{
 			this.commandName = query.substring(COMMAND_NAME_INDEX, firstSpaceIndex);
-			
+
 			String argumentsString = query.substring(firstSpaceIndex + 1);
 
 			ArrayList<String> arguments = this.parseArgumentString(argumentsString);
@@ -49,23 +51,16 @@ public class QueryCommandBuilder extends BaseBuilder
 	@Override
 	public Object getResult()
 	{
-		try
+		if (this.commandName.contentEquals("help"))
+			return new HelpCommand(this.getArguments());
+		else if (this.commandName.contentEquals("order"))
 		{
-			QueryCommand queryCommand = null;
-			
-			switch (this.commandName)
-			{
-				case "help":
-					queryCommand = new HelpCommand(this.getArguments());
-					break;
-			}
-			
-			
-			return queryCommand;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			ArrayList<String> arguments = this.getArguments();
+
+			if (arguments.get(SUBCOMMAND_INDEX).contentEquals("add"))
+				return new AddOrderCommand(this.getArguments());
+			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("cancel"))
+				return new CancelOrderCommand(this.getArguments());
 		}
 
 		return null;

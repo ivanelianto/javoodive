@@ -4,25 +4,24 @@ import java.util.Date;
 
 public class Transaction
 {
+	public static final String NOT_PAID_STATUS = "Not Paid";
 	private User customer;
 	private Menu menu;
 	private int quantity;
 	private Date transactionDate;
-	private String status;
 
 	public Transaction()
 	{
 		super();
 	}
 
-	public Transaction(User customer, Menu menu, int quantity, String status)
+	public Transaction(User customer, Menu menu, int quantity)
 	{
 		super();
 		this.customer = customer;
 		this.menu = menu;
 		this.quantity = quantity;
 		this.transactionDate = new Date();
-		this.status = status;
 	}
 
 	public User getCustomer()
@@ -63,15 +62,5 @@ public class Transaction
 	public void setTransactionDate(Date transactionDate)
 	{
 		this.transactionDate = transactionDate;
-	}
-
-	public String getStatus()
-	{
-		return status;
-	}
-
-	public void setStatus(String status)
-	{
-		this.status = status;
 	}
 }

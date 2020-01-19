@@ -25,7 +25,7 @@ public class MenuRepository
 
 	public static Menu findByName(String name)
 	{
-		return menus.stream().filter(x -> x.getName().contentEquals(name)).findFirst().orElse(null);
+		return menus.stream().filter(x -> x.getName().contains(name)).findFirst().orElse(null);
 	}
 
 	public static Menu getByIndex(int index)

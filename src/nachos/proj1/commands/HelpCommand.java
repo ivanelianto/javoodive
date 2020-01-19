@@ -17,7 +17,7 @@ public class HelpCommand extends QueryCommand
 
 	public HelpCommand(ArrayList<String> arguments)
 	{
-		this.arguments = arguments;
+		super(arguments);
 	}
 
 	@Override

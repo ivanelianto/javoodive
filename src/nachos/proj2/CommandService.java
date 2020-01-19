@@ -21,7 +21,10 @@ public class CommandService
 		{
 			QueryCommandBuilder builder = new QueryCommandBuilder(messageContent);
 			QueryCommand command = (QueryCommand) builder.getResult();
-			command.execute();
+			String executionResult = command.execute();
+			
+			if (executionResult != null)
+				System.out.println(executionResult);
 		}
 	}
 }
