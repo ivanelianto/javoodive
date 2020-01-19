@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nachos.proj1.MainSystem;
 import nachos.proj1.models.Menu;
 import nachos.proj1.models.Transaction;
 import nachos.proj1.models.User;
 import nachos.proj1.repository.MenuRepository;
 import nachos.proj1.repository.TransactionRepository;
-import nachos.proj1.repository.UserRepository;
+import nachos.proj1.utilities.DateHelper;
+import nachos.proj2.CommandService;
 
 public class AddOrderCommand extends QueryCommand
 {
@@ -23,21 +23,13 @@ public class AddOrderCommand extends QueryCommand
 		super(arguments);
 	}
 
-	private boolean isValidArguments(ArrayList<String> arguments)
-	{
-		return arguments.size() >= MINIMUM_ARGUMENT_LENGTH;
-	}
-
 	@Override
 	public String execute()
 	{
 		ArrayList<String> arguments = this.getArguments();
 
 		if (!isValidArguments(arguments))
-		{
-			System.err.println("Missing arguments.");
-			return null;
-		}
+			return "Missing arguments.";
 
 		arguments.remove(0);
 		String rawArgument = String.join(" ", arguments);
@@ -57,13 +49,19 @@ public class AddOrderCommand extends QueryCommand
 				return "Menu not found.";
 			else
 			{
-				User customer = UserRepository.getByIndex(MainSystem.userIndex);
+				User customer = CommandService.getInstance().getSender();
 				Transaction transaction = new Transaction(customer, menu, quantity);
 				TransactionRepository.add(transaction);
-				return transaction.getQuantity() + "x " + transaction.getMenu().getName();
+				return String.format("%s ordered %dx %s at %s.", customer.getUsername(), transaction.getQuantity(),
+						transaction.getMenu().getName(), DateHelper.getFormattedDate(transaction.getTransactionDate()));
 			}
 		}
 
 		return null;
+	}
+
+	private boolean isValidArguments(ArrayList<String> arguments)
+	{
+		return arguments.size() >= MINIMUM_ARGUMENT_LENGTH;
 	}
 }
