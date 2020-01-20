@@ -59,7 +59,13 @@ public class QueryCommandBuilder extends BaseBuilder
 		{
 			ArrayList<String> arguments = this.getArguments();
 
-			if (arguments.get(SUBCOMMAND_INDEX).contentEquals("debt"))
+			if (arguments.isEmpty())
+			{
+				ArrayList<String> forgedArgument = new ArrayList<String>();
+				forgedArgument.add("stat");
+				return new HelpCommand(forgedArgument);
+			}
+			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("debt"))
 				return new ShowDebtCommand(this.getArguments());
 			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("awesomeness"))
 				return new ShowSummaryCommand(this.getArguments());
@@ -68,7 +74,13 @@ public class QueryCommandBuilder extends BaseBuilder
 		{
 			ArrayList<String> arguments = this.getArguments();
 
-			if (arguments.get(SUBCOMMAND_INDEX).contentEquals("add"))
+			if (arguments.isEmpty())
+			{
+				ArrayList<String> forgedArgument = new ArrayList<String>();
+				forgedArgument.add("order");
+				return new HelpCommand(forgedArgument);
+			}
+			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("add"))
 				return new AddOrderCommand(this.getArguments());
 			else if (arguments.get(SUBCOMMAND_INDEX).contentEquals("cancel"))
 				return new CancelOrderCommand(this.getArguments());

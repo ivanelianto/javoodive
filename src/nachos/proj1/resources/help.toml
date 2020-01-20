@@ -1,0 +1,43 @@
+[order]
+description = """This command is used for action related to food order.
+
+Complete commands:
+- order add, see more by send /help order add.
+- order add, see more by send /help order cancel."""
+
+[order.add]
+description = """Add food order.
+This command must have menu name argument.
+You could also give optional quantity argument before menu name,
+if you wanted to order more than 1 quantity.
+
+Example:
+/order add Nasi Goreng
+/order add 10 Nasi Goreng
+
+Explanation:
+10 = Quantity
+Nasi Goreng = Menu name"""
+
+[order.cancel]
+description = """Remove food order.
+This command must have menu name argument.
+
+Example:
+/order cancel Nasi Goreng
+
+Explanation:
+Nasi Goreng = Menu name"""
+
+[stat]
+description = """Display sender transactions statistics.
+
+Complete commands:
+- stat debt, see more by send /help stat debt.
+- stat awesomeness, see more by send /help stat awesomeness."""
+
+[stat.debt]
+description = "Display sender transaction debt."
+
+[stat.awesomeness]
+description = "Display sender transaction summary since using this application."
